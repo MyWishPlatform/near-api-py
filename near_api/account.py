@@ -114,18 +114,24 @@ class Account(object):
 
     def delete_account(self, beneficiary_id: str) -> str:
         return self._sign_and_submit_tx_async(self._account_id, [transactions.create_delete_account_action(beneficiary_id)])
+    
+    def create_full_access_key(self, public_key) -> str:
+        return self._sign_and_submit_tx_async(self._account_id, [transactions.create_full_access_key_action(public_key)])
+    
+    def delete_access_key(self, public_key) -> str:
+        return self._sign_and_submit_tx_async(self._account_id, [transactions.create_delete_access_key_action(public_key)])
 
     def deploy_contract(self, contract_code) -> str:
         return self._sign_and_submit_tx_async(self._account_id, [transactions.create_deploy_contract_action(contract_code)])
 
-    def deploy_and_init_contract(self, contract_id, contract_code, args, gas=DEFAULT_ATTACHED_GAS, 
+    def deploy_and_init_contract(self, contract_code, args, gas=DEFAULT_ATTACHED_GAS, 
                                  init_method_name="new") -> str:
         args = json.dumps(args).encode('utf8')
         actions = [     
             near_api.transactions.create_deploy_contract_action(contract_code),
             near_api.transactions.create_function_call_action(init_method_name, args, gas, 0)
         ]
-        return self._sign_and_submit_tx_async(contract_id, actions)
+        return self._sign_and_submit_tx_async(self._account_id, actions)
     
     def stake(self, public_key, amount) -> str:
         return self._sign_and_submit_tx_async(self._account_id, [transactions.create_staking_action(public_key, amount)])
