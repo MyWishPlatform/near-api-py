@@ -48,7 +48,7 @@ class BinarySerializer:
             else:
                 assert False, type(field_type)    # TODO: Need to replace to Exception
         except Exception:
-            print("Failed to serialize %s as %s" % (value, field_type))
+            print("Failed to serialize %s as %s" % (value, field_type), flush=True)
             raise
 
     def serialize_struct(self, obj):
