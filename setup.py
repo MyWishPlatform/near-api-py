@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 META_DATA = dict(
     name="near-api-py",
-    version="0.2.0",
+    version="0.2.1",
     license="MIT",
 
     author="NEAR Inc, MyWish.io",

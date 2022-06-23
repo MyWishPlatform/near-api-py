@@ -29,7 +29,7 @@ class JsonProvider(object):
     def rpc_addr(self) -> str:
         return self._rpc_addr
 
-    def json_rpc(self, method: str, params, timeout: TimeoutType=10.0) -> dict:
+    def json_rpc(self, method: str, params, timeout: TimeoutType=30.0) -> dict:
         j = {
             'method': method,
             'params': params,
@@ -43,7 +43,7 @@ class JsonProvider(object):
             raise JsonProviderError(content["error"])
         return content["result"]
 
-    def send_tx(self, signed_tx: bytes, timeout: TimeoutType=10.0) -> dict:
+    def send_tx(self, signed_tx: bytes, timeout: TimeoutType=30.0) -> dict:
         return self.json_rpc('broadcast_tx_async',
                              [base64.b64encode(signed_tx).decode('utf8')], timeout=timeout)
 
@@ -52,18 +52,18 @@ class JsonProvider(object):
                              [base64.b64encode(signed_tx).decode('utf8')],
                              timeout=timeout)
 
-    def get_status(self, timeout: TimeoutType=10.0) -> dict:
+    def get_status(self, timeout: TimeoutType=30.0) -> dict:
         r = requests.get("%s/status" % self.rpc_addr(), timeout=timeout)
         r.raise_for_status()
         return json.loads(r.content)
 
-    def get_validators(self, timeout: TimeoutType=10.0) -> dict:
+    def get_validators(self, timeout: TimeoutType=30.0) -> dict:
         return self.json_rpc('validators', [None], timeout=timeout)
 
-    def query(self, query_object, timeout: TimeoutType=10.0) -> dict:
+    def query(self, query_object, timeout: TimeoutType=30.0) -> dict:
         return self.json_rpc('query', query_object, timeout=timeout)
 
-    def get_account(self, account_id: str, finality=FinalityTypes.OPTIMISTIC, timeout: TimeoutType=10.0) -> dict:
+    def get_account(self, account_id: str, finality=FinalityTypes.OPTIMISTIC, timeout: TimeoutType=30.0) -> dict:
         return self.json_rpc(
             'query', {
                 "request_type": "view_account",
@@ -71,7 +71,7 @@ class JsonProvider(object):
                 "finality": finality
             }, timeout=timeout)
 
-    def get_access_key_list(self, account_id: str, finality=FinalityTypes.OPTIMISTIC, timeout: TimeoutType=10.0) -> dict:
+    def get_access_key_list(self, account_id: str, finality=FinalityTypes.OPTIMISTIC, timeout: TimeoutType=30.0) -> dict:
         return self.json_rpc(
             'query', {
                 "request_type": "view_access_key_list",
@@ -79,7 +79,7 @@ class JsonProvider(object):
                 "finality": finality
             }, timeout=timeout)
 
-    def get_access_key(self, account_id: str, public_key: str, finality=FinalityTypes.OPTIMISTIC, timeout: TimeoutType=10.0) -> dict:
+    def get_access_key(self, account_id: str, public_key: str, finality=FinalityTypes.OPTIMISTIC, timeout: TimeoutType=30.0) -> dict:
         return self.json_rpc(
             'query', {
                 "request_type": "view_access_key",
@@ -88,7 +88,7 @@ class JsonProvider(object):
                 "finality": finality
             }, timeout=timeout)
 
-    def view_call(self, account_id: str, method_name: str, args: bytes, finality=FinalityTypes.OPTIMISTIC, timeout: TimeoutType=10.0):
+    def view_call(self, account_id: str, method_name: str, args: bytes, finality=FinalityTypes.OPTIMISTIC, timeout: TimeoutType=30.0):
         return self.json_rpc(
             'query', {
                 "request_type": "call_function",
@@ -98,16 +98,16 @@ class JsonProvider(object):
                 "finality": finality
             }, timeout=timeout)
 
-    def get_block(self, block_id, timeout: TimeoutType=10.0) -> dict:
+    def get_block(self, block_id, timeout: TimeoutType=30.0) -> dict:
         return self.json_rpc('block', [block_id], timeout=timeout)
 
-    def get_chunk(self, chunk_id, timeout: TimeoutType=10.0) -> dict:
+    def get_chunk(self, chunk_id, timeout: TimeoutType=30.0) -> dict:
         return self.json_rpc('chunk', [chunk_id], timeout=timeout)
 
-    def get_tx(self, tx_hash, tx_recipient_id, timeout: TimeoutType=10.0) -> dict:
+    def get_tx(self, tx_hash, tx_recipient_id, timeout: TimeoutType=30.0) -> dict:
         return self.json_rpc('tx', [tx_hash, tx_recipient_id], timeout=timeout)
 
-    def get_changes_in_block(self, block_id=None, finality:str=None, timeout: TimeoutType=10.0) -> dict:
+    def get_changes_in_block(self, block_id=None, finality:str=None, timeout: TimeoutType=30.0) -> dict:
         '''Use either block_id or finality. Choose finality from "finality_types" class'''
         params = {}
         if block_id:
@@ -140,5 +140,5 @@ class JsonProvider(object):
     def get_next_light_client_block(self, last_block_hash) -> dict:
         return self.json_rpc('next_light_client_block', [last_block_hash])
 
-    def get_receipt(self, receipt_hash, timeout: TimeoutType=10.0) -> dict:
+    def get_receipt(self, receipt_hash, timeout: TimeoutType=30.0) -> dict:
         return self.json_rpc('EXPERIMENTAL_receipt', [receipt_hash], timeout=timeout)
